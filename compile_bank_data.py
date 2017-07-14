@@ -104,19 +104,21 @@ def get_data(dt_start, dt_end, already_loaded=False):
 def combine_data():
     with open('SP500financials.pickle', 'rb') as f:
         df_ticks = pickle.load(f)
+
     df = pd.DataFrame()
+
     for ticker in df_ticks:
-        df_ = pd.read_csv('financials_2006_2009/{}.csv'.format(ticker))
-        df_.set_index('Date', inplace=True)
+        df_ = pd.read_csv('financials2006_2009/{}'.format(ticker)).set_index('Date')
         df_.drop(['Open', 'High', 'Low', 'Volume'], axis=1, inplace=True)
-        df_.rename(column={'Close':ticker})
+        df_.rename(columns={'Close':ticker}, inplace=True)
+        df_ = pd.DataFrame(df_)
 
-        if df['{}'.format(ticker)] not in df:
-            df = df.join(df_) # 'outer' will preserve alphabetical order
+        if ticker not in df:
+            df = df.join(df_, how='outer') # 'outer' will preserve alphabetical order
         else:
-            print(ticker, " already exists.")
+            print(ticker, " already in dataframe.")
 
-    df.to_csv('SP500_financials_2006-2009')
+    df.to_csv('SP500_financials2006-2009')
 
 def main():
     dt_start, dt_end, stocks_interested = bank_pull_test()
