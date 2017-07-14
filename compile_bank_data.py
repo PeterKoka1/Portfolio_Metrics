@@ -60,6 +60,7 @@ def save_all_financials():
     r = requests.get('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies') # scanning HTML
     soup = bs.BeautifulSoup(r.text, 'lxml')
     SP500financials = soup.find('table', {'class':'wikitable sortable'})
+    
     tickers = []
     sector = []
 
