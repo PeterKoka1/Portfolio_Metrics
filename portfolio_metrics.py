@@ -14,19 +14,27 @@ from matplotlib import style
 import warnings
 warnings.filterwarnings('ignore')
 
-df = pd.read_csv("SP500_joined_closes_2.csv")
+df = pd.read_csv("SP500_financials2006-2009")
+df.set_index('Date', inplace=True)
 df.fillna(0, inplace=True)
-no_index = df.drop('Date', axis=1)
-stocks = no_index.columns.values.tolist()
 
-for stock in stocks:
-    print("{} 3yr mean: ".format(stock), np.mean(no_index[stock]))
+for stock in df.columns.values.tolist():
+    means = np.mean(df[stock])
+    if means == 0:
+        df.drop(stock, axis=1, inplace=True)
+
+stocks = df.columns.values.tolist()
+
+###: Not relevant metrics, but wanted to test
 
 all_standard_deviations = []
-stds = np.std(no_index)
-for std in stds:
+
+std = np.std(df)
+for val in std:
     all_standard_deviations.append(std)
-print("Standard Deviation of all stocks: ", np.std(all_standard_deviations))
+print("Standard Deviation of index: ", np.std(all_standard_deviations))
+for stock in stocks:
+    (print("{} 3yr mean: ".format(stock), np.mean(df[stock])))
 
 ###: WANTED PORTFOLIO METRICS
 # SPLIT FROM 2006 - right before crash TO crash till 2009
@@ -36,4 +44,3 @@ print("Standard Deviation of all stocks: ", np.std(all_standard_deviations))
 # Sortino Ratio
 # Treynor Ratio
 # Information Ratio
-
