@@ -18,29 +18,51 @@ df = pd.read_csv("SP500_financials2006-2009")
 df.set_index('Date', inplace=True)
 df.fillna(0, inplace=True)
 
+###: dropping stocks with values of 0 throughout period
 for stock in df.columns.values.tolist():
     means = np.mean(df[stock])
     if means == 0:
         df.drop(stock, axis=1, inplace=True)
-
 stocks = df.columns.values.tolist()
 
-###: Not relevant metrics, but wanted to test
+def set_years():
 
-all_standard_deviations = []
+    df.reset_index(inplace=True)
 
-std = np.std(df)
-for val in std:
-    all_standard_deviations.append(std)
-print("Standard Deviation of index: ", np.std(all_standard_deviations))
-for stock in stocks:
-    (print("{} 3yr mean: ".format(stock), np.mean(df[stock])))
+    df_2006 = df[df['Date'] < '2006-12-31']
+    df_2007 = df[df['Date'] > '2006-12-31']
+    df_2007 = df_2007['Date'] < '2007-12-31'
+    df_2008 = df[df['Date'] > '2007-12-31']
+    df_2008 = df_2008['Date'] < '2008-12-31'
+    df_2009 = df[df['Date'] > '2008-12-31']
+    df_2009 = df_2009['Date'] < '2009-12-31'
 
-###: WANTED PORTFOLIO METRICS
-# SPLIT FROM 2006 - right before crash TO crash till 2009
-# Return from 2006 till before the crash (do it by dates)
-# Sharpe Ratio
-# Roy's Safety-First Ratio
-# Sortino Ratio
-# Treynor Ratio
-# Information Ratio
+    return df_2006, df_2007, df_2008, df_2009
+
+set_years()
+
+def annualized_returns():
+
+    df_2006, df_2007, df_2008, df_2009 = set_years()
+    each_alloc = 1 / len(stocks)
+    alloc = np.full((1, len(stocks)), each_alloc)
+
+    ##: 2006 returns
+    df_2006.set_index('Date', inplace=True)
+    df_2006.drop('index', axis=1, inplace=True)
+    df_2006.fillna(0, inplace=True)
+    list = []
+    for stock in df_2006:
+        vals_2006 = df_2006[stock].values.copy()
+        pct_change_2006 = (vals_2006 / vals_2006[0])
+        for i in pct_change_2006:
+            sub = pct_change_2006[-1] - pct_change_2006[0]
+            list.append(sub)
+    print(list)
+
+        # pct_change is 116row x 59col, alloc is 1row x 59col
+        # returns = np.dot(pct_change_2006, alloc.reshape(59,1))
+
+        # will return 116 x 1 matrix for each equity in portfolio
+
+annualized_returns()
