@@ -11,6 +11,7 @@ import datetime as dt
 import pandas_datareader.data as web
 import matplotlib.pyplot as plt
 from matplotlib import style
+from math import isnan
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -47,22 +48,52 @@ def annualized_returns():
     each_alloc = 1 / len(stocks)
     alloc = np.full((1, len(stocks)), each_alloc)
 
-    ##: 2006 returns
+    ###: 2006 returns
     df_2006.set_index('Date', inplace=True)
     df_2006.drop('index', axis=1, inplace=True)
     df_2006.fillna(0, inplace=True)
-    list = []
+    yrly_pct_change06 = []
     for stock in df_2006:
-        vals_2006 = df_2006[stock].values.copy()
-        pct_change_2006 = (vals_2006 / vals_2006[0])
-        for i in pct_change_2006:
-            sub = pct_change_2006[-1] - pct_change_2006[0]
-            list.append(sub)
-    print(list)
+        vals = df_2006[stock].values.copy()
+        pct_change = vals / vals[0]
+        yrly_pct_change06.append(pct_change)
+    SP500_changes06 = []
+    for stock in yrly_pct_change06:
+        yr_return = stock[-1] - stock[0]
+        SP500_changes06.append(yr_return)
 
-        # pct_change is 116row x 59col, alloc is 1row x 59col
-        # returns = np.dot(pct_change_2006, alloc.reshape(59,1))
+    ###: TEST FOR 'AMG' - yhoo finance: 2006 return was 1.1389
+    # AMG = yrly_pct_change[5]
+    # print(np.amax(AMG)) # 1.1390
 
-        # will return 116 x 1 matrix for each equity in portfolio
+    ###: GET RID OF NANs
+    stocks_for_dict=[]
+    for stock in stocks:
+        stocks_for_dict.append(stock)
+    stock_dict = dict(zip(stocks_for_dict, SP500_changes06))
+    cleaned_dict = {val: stock_dict[val] for val in stock_dict if not isnan(stock_dict[val])}
+
+    ###: COMPARE TO INVESTIGATE AND CHANGE ALLOC
+    new_list=[]
+    for stock, pctchange in cleaned_dict.items():
+        new_list.append(stock)
+    for x in stocks_for_dict:
+        if x not in new_list:
+            print("Deleting {}".format(x))
+            ###: **DFS went public 2007**
+    each_alloc_2006 = 1 / len(new_list)
+    alloc_2006 = np.full((1, len(new_list)), each_alloc_2006)
+    SP500_changes06_clean = []
+    for key, val in cleaned_dict.items():
+        SP500_changes06_clean.append(val)
+
+    ### PORTFOLIO VALUE 2006 (even allocations)
+    portval_2006 = np.dot(alloc_2006, SP500_changes06_clean)
+
+    print("Financial Index 2006 returns: {}".format(portval_2006.item()))  # 5.71% return
+
+    ###: we need to normalize to find daily ret
+
+    ###: 2007 returns
 
 annualized_returns()
