@@ -1,3 +1,5 @@
+###: INCOMPLETE
+
 """
 Assumptions of 'financial index':
 1) even weighting distribution of each equity in portfolio
