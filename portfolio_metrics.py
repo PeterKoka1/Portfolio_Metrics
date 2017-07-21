@@ -33,8 +33,8 @@ def set_years():
     df.reset_index(inplace=True)
 
     df_2006 = df[df['Date'] < '2006-12-31']
-    df_2007 = df[df['Date'] > '2006-12-31']
-    df_2007 = df_2007['Date'] < '2007-12-31'
+    df_07 = df[df['Date'] > '2006-12-31']
+    df_2007 = pd.DataFrame([df_07['Date'] < '2007-12-31'])
     df_2008 = df[df['Date'] > '2007-12-31']
     df_2008 = df_2008['Date'] < '2008-12-31'
     df_2009 = df[df['Date'] > '2008-12-31']
@@ -92,10 +92,21 @@ def annualized_returns():
     ### PORTFOLIO VALUE 2006 (even allocations)
     portval_2006 = np.dot(alloc_2006, SP500_changes06_clean)
 
-    print("Financial Index 2006 returns: {}".format(portval_2006.item()))  # 5.71% return
+    return portval_2006, df_2006
 
-    ###: we need to normalize to find daily ret
+def find_daily_returns():
+    portval_2006, df_2006 = annualized_returns()
 
-    ###: 2007 returns
+    ### DAILY PERCENTAGE CHANGE
+    daily_val = df_2006.copy()
+    for i in daily_val:
+        dlrets = (daily_val[i].div(daily_val[i].shift())) - 1
+        dlrets = pd.DataFrame(dlrets)
+        return dlrets
 
-annualized_returns()
+def metrics():
+    daily_rets = find_daily_returns()
+    for i in daily_rets:
+        print(i)
+    average_daily = np.mean(daily_rets)
+    print(average_daily)
