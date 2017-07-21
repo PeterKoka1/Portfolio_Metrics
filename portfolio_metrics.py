@@ -91,22 +91,39 @@ def annualized_returns():
 
     ### PORTFOLIO VALUE 2006 (even allocations)
     portval_2006 = np.dot(alloc_2006, SP500_changes06_clean)
-
+    
     return portval_2006, df_2006
 
 def find_daily_returns():
     portval_2006, df_2006 = annualized_returns()
 
     ### DAILY PERCENTAGE CHANGE
-    daily_val = df_2006.copy()
-    for i in daily_val:
-        dlrets = (daily_val[i].div(daily_val[i].shift())) - 1
+    daily_val_2006 = df_2006.copy()
+    rets_daily_2006 = pd.DataFrame()
+    for i in daily_val_2006:
+        dlrets = (daily_val_2006[i].div(daily_val_2006[i].shift())) - 1
         dlrets = pd.DataFrame(dlrets)
-        return dlrets
+        if rets_daily_2006.empty:
+            rets_daily_2006 = dlrets
+        else:
+            rets_daily_2006 = rets_daily_2006.join(dlrets)
+    return rets_daily_2006
 
 def metrics():
-    daily_rets = find_daily_returns()
-    for i in daily_rets:
-        print(i)
-    average_daily = np.mean(daily_rets)
-    print(average_daily)
+    rets_daily_2006 = find_daily_returns()
+    # we can't divide by t-1 on t = 1, so remove NaN
+    rets_daily_2006 = rets_daily_2006[1:]
+    rets_daily_2006.dropna(axis=1, inplace=True)
+    mean_list_2006 = []
+    vol_list_2006 = []
+    for i in rets_daily_2006:
+        means = np.mean(rets_daily_2006[i])
+        mean_list_2006.append(means)
+        vol = np.std(rets_daily_2006[i])
+        vol_list_2006.append(vol)
+    cleaned_avg_dly_ret_2006 = [x for x in mean_list_2006 if str(x) != 'nan']
+    average_daily_return_2006 = round(np.mean(cleaned_avg_dly_ret_2006)*100,3)
+    average_daily_volatility_2006 = round(np.mean(vol_list_2006),3)
+    sharpe_2006 = round((average_daily_return_2006 - 0.02)/average_daily_volatility_2006,2)
+
+    return average_daily_return_2006, average_daily_volatility_2006, sharpe_2006
