@@ -14,6 +14,7 @@ from os.path import exists
 import warnings
 warnings.filterwarnings('ignore')
 
+###: trial data pull
 def bank_pull_test():
     stocks_interested = ['GS','MS','JPM','BAC']
     dt_start = dt.datetime(2006,5,5)
@@ -30,6 +31,7 @@ def bank_pull_test():
     #print(goldman_current)
     return dt_start, dt_end, stocks_interested
 
+###: plot test
 def plot_test(dt_start, dt_end, stocks_interested):
     # print(plt.style.available)
     style.use('ggplot')
