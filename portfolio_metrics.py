@@ -32,6 +32,7 @@ def set_years():
 
     df.reset_index(inplace=True)
 
+    ###: Date split turns df into nonetype.. issue
     df_2006 = df[df['Date'] < '2006-12-31']
     df_07 = df[df['Date'] > '2006-12-31']
     df_2007 = pd.DataFrame([df_07['Date'] < '2007-12-31'])
