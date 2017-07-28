@@ -15,6 +15,7 @@ Assumptions of index exist in code documentation (see 'portfolio_metrics.py')
 FINAL RESULTS:
 
 Portval Change 2006: +5.793%
+
 2006 Average Daily Return: 0.04%
 2006 Average Daily Volatility 0.013%
 2006 Sharpe Ratio: 1.54
