@@ -5,9 +5,9 @@ Took all stocks on SP500 in 'Financials' sector and pulled Google historical dat
 
 'porfolio_metrics.py' calculates following portfolio metrics of made-up bank index:
 
-1)
-2)
-3)
+1) Average Daily Return
+2) Average Daily Volatility
+3) Sharpe Ratio
 ...
 
 Assumptions of index exist in code documentation (see 'portfolio_metrics.py')
