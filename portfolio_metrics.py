@@ -202,11 +202,14 @@ def find_daily_returns():
         else:
             rets_daily_2008 = rets_daily_2008.join(dlrets)
 
-    return rets_daily_2006, rets_daily_2007, rets_daily_2008
+
+    return rets_daily_2006, rets_daily_2007, rets_daily_2008, portval_2006, portval_2007, portval_2008
+
+find_daily_returns()
 
 def metrics():
 
-    rets_daily_2006, rets_daily_2007, rets_daily_2008 = find_daily_returns()
+    rets_daily_2006, rets_daily_2007, rets_daily_2008, portval_2006, portval_2007, portval_2008 = find_daily_returns()
 
     # we can't divide by t-1 on t = 1, so remove NaN
     rets_daily_2006 = rets_daily_2006[1:]
@@ -222,9 +225,11 @@ def metrics():
     average_daily_return_2006 = round(np.mean(cleaned_avg_dly_ret_2006)*100,3)
     average_daily_volatility_2006 = round(np.mean(vol_list_2006),3)
     sharpe_2006 = round((average_daily_return_2006 - 0.02)/average_daily_volatility_2006,2)
-    # print("2006 Average Daily Return: {}%".format(average_daily_return_2006))
-    # print("2006 Average Daily Volatility {}%".format(average_daily_volatility_2006))
-    # print("2006 Sharpe Ratio: {}".format(sharpe_2006))
+    portval_2006 = round(portval_2006.item()*100,3)
+    print("Portval Change 2006: {}%".format(portval_2006))
+    print("2006 Average Daily Return: {}%".format(average_daily_return_2006))
+    print("2006 Average Daily Volatility {}%".format(average_daily_volatility_2006))
+    print("2006 Sharpe Ratio: {}".format(sharpe_2006))
 
     rets_daily_2007 = rets_daily_2007[1:]
     rets_daily_2007.dropna(axis=1, inplace=True)
@@ -239,9 +244,11 @@ def metrics():
     average_daily_return_2007 = round(np.mean(cleaned_avg_dly_ret_2007) * 100, 3)
     average_daily_volatility_2007 = round(np.mean(vol_list_2007), 3)
     sharpe_2007 = round((average_daily_return_2007 - 0.02) / average_daily_volatility_2007, 2)
-    # print("2007 Average Daily Return: {}%".format(average_daily_return_2007))
-    # print("2007 Average Daily Volatility {}%".format(average_daily_volatility_2007))
-    # print("2007 Sharpe Ratio: {}".format(sharpe_2007))
+    portval_2007 = round(portval_2007.item()*100, 3)
+    print("Portval Change 2007: {}%".format(portval_2007))
+    print("2007 Average Daily Return: {}%".format(average_daily_return_2007))
+    print("2007 Average Daily Volatility {}%".format(average_daily_volatility_2007))
+    print("2007 Sharpe Ratio: {}".format(sharpe_2007))
 
     rets_daily_2008 = rets_daily_2008[1:]
     rets_daily_2008.dropna(axis=1, inplace=True)
@@ -256,18 +263,32 @@ def metrics():
     average_daily_return_2008 = round(np.mean(cleaned_avg_dly_ret_2008) * 100, 3)
     average_daily_volatility_2008 = round(np.mean(vol_list_2008), 3)
     sharpe_2008 = round((average_daily_return_2008 - 0.02) / average_daily_volatility_2008, 2)
-    # print("2008 Average Daily Return: {}%".format(average_daily_return_2008))
-    # print("2008 Average Daily Volatility {}%".format(average_daily_volatility_2008))
-    # print("2008 Sharpe Ratio: {}".format(sharpe_2008))
+    portval_2008 = round(portval_2008.item()*100, 3)
+    print("Portval Change 2008: {}%".format(portval_2008))
+    print("2008 Average Daily Return: {}%".format(average_daily_return_2008))
+    print("2008 Average Daily Volatility {}%".format(average_daily_volatility_2008))
+    print("2008 Sharpe Ratio: {}".format(sharpe_2008))
 
-    return rets_daily_2006, rets_daily_2007, rets_daily_2008
+def main():
+    metrics()
+    
+if __name__ == '__main__':
+    main()
 
-# 2006 Average Daily Return: 0.04%
-# 2006 Average Daily Volatility 0.013%
-# 2006 Sharpe Ratio: 1.54
-# 2007 Average Daily Return: -0.028%
-# 2007 Average Daily Volatility 0.018%
-# 2007 Sharpe Ratio: -2.67
-# 2008 Average Daily Return: -0.099%
-# 2008 Average Daily Volatility 0.053%
-# 2008 Sharpe Ratio: -2.25
+"""
+Portval Change 2006: +5.793%
+2006 Average Daily Return: 0.04%
+2006 Average Daily Volatility 0.013%
+2006 Sharpe Ratio: 1.54
+
+Portval Change 2007: -2.938%
+2007 Average Daily Return: -0.028%
+2007 Average Daily Volatility 0.018%
+2007 Sharpe Ratio: -2.67
+
+Portval Change 2008: -39.606%
+2008 Average Daily Return: -0.099%
+2008 Average Daily Volatility 0.053%
+2008 Sharpe Ratio: -2.25
+
+"""
